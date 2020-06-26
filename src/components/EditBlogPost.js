@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-const NewBlogPost = ({history, addBlogPost, nextId}) => {
+const EditBlogPost = ({history, post, updateBlogPost}) => {
     //styling
     const divStyles = {
         display: 'grid',
@@ -25,6 +25,13 @@ const NewBlogPost = ({history, addBlogPost, nextId}) => {
         content: ""
     }
     const [formState,setFormState] = useState(initialFormState)
+    useEffect(()=>{
+        post && setFormState({
+           title: post.title,
+           category: post.category,
+           content: post.content 
+        })
+    }, [post])
 
     function handleChange(event){
         const name = event.target.name
@@ -34,14 +41,14 @@ const NewBlogPost = ({history, addBlogPost, nextId}) => {
 
     function handleSubmit(event){
         event.preventDefault()
-        const newPost = {
-            _id: nextId,
+        const updatedPost = {
+            _id: post._id,
             title: formState.title,
             category: formState.category,
             modified_date: new Date(),
             content: formState.content
         }
-        addBlogPost(newPost)
+        updateBlogPost(updatedPost)
         history.push("/")
         //history.push(`/posts/${nextId}`)
     }
@@ -50,19 +57,19 @@ const NewBlogPost = ({history, addBlogPost, nextId}) => {
         <form onSubmit={handleSubmit}>
             <div style={divStyles}>
                 <label style={labelStyles}>Title</label>
-                <input style={inputStyles} required type="text" name="title" placeholder="Enter a title" onChange={handleChange}></input>
+                <input style={inputStyles} required type="text" name="title" value={formState.title} placeholder="Enter a title" onChange={handleChange}></input>
             </div>
             <div style={divStyles}>
                 <label style={labelStyles}>Category</label>
-                <input style={inputStyles} type="text" name="category" placeholder="Enter a category" onChange={handleChange}></input>
+                <input style={inputStyles} type="text" name="category" value={formState.category} placeholder="Enter a category" onChange={handleChange}></input>
             </div>
             <div style={divStyles}>
                 <label style={labelStyles}>Content</label>
-                <textarea style={textareaStyles} type="text" name="content" placeholder="Enter a post" onChange={handleChange}></textarea>
+                <textarea style={textareaStyles} type="text" name="content" value={formState.content} placeholder="Enter a post" onChange={handleChange}></textarea>
             </div>
-            <input type="submit" value="Add a post"></input>
+            <input type="submit" value="Update post"></input>
         </form>
     )
 }
 
-export default NewBlogPost
+export default EditBlogPost
